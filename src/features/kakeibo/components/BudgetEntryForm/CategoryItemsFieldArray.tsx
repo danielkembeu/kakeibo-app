@@ -58,52 +58,38 @@ function BudgetItemRow({
       ? (computed.quantity ?? 0) * (computed.unitAmount ?? 0)
       : 0;
 
-  return (
-    <div className="flex items-start gap-1.5">
-      <FormField
-        control={control}
-        name={`items.${category.id}.${index}.name`}
-        render={({ field }) => (
-          <FormItem className="flex-1">
-            <FormControl>
-              <Input placeholder="Nom" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+  const nameField = (
+    <FormField
+      control={control}
+      name={`items.${category.id}.${index}.name`}
+      render={({ field }) => (
+        <FormItem className="flex-1">
+          <FormControl>
+            <Input placeholder="Nom" {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
 
-      {computed ? (
-        <>
-          <FormField
-            control={control}
-            name={`items.${category.id}.${index}.computed.quantity`}
-            render={({ field }) => (
-              <FormItem className="w-16">
-                <FormControl>
-                  <NumberInput field={field} placeholder="Qté" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={control}
-            name={`items.${category.id}.${index}.computed.unitAmount`}
-            render={({ field }) => (
-              <FormItem className="w-24">
-                <FormControl>
-                  <NumberInput field={field} placeholder="Prix unit." />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <span className="mt-1.5 w-20 shrink-0 text-right font-mono text-xs text-muted-foreground">
-            {formatAmount(computedTotal)}
-          </span>
-        </>
-      ) : (
+  const removeButton = (
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      onClick={onRemove}
+      aria-label="Supprimer le poste"
+    >
+      <Trash2 />
+    </Button>
+  );
+
+  if (!computed) {
+    return (
+      <div className="flex items-start gap-1.5">
+        {nameField}
+
         <FormField
           control={control}
           name={`items.${category.id}.${index}.amount`}
@@ -116,17 +102,51 @@ function BudgetItemRow({
             </FormItem>
           )}
         />
-      )}
 
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        onClick={onRemove}
-        aria-label="Supprimer le poste"
-      >
-        <Trash2 />
-      </Button>
+        {removeButton}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-1.5 rounded-lg border p-2">
+      <div className="flex items-start gap-1.5">
+        {nameField}
+        {removeButton}
+      </div>
+
+      <div className="flex items-center gap-1.5">
+        <FormField
+          control={control}
+          name={`items.${category.id}.${index}.computed.quantity`}
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormControl>
+                <NumberInput field={field} placeholder="Qté" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <span className="mt-1.5 text-muted-foreground">×</span>
+
+        <FormField
+          control={control}
+          name={`items.${category.id}.${index}.computed.unitAmount`}
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormControl>
+                <NumberInput field={field} placeholder="Prix unit." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <span className="mt-1.5 shrink-0 text-right font-mono text-xs text-muted-foreground">
+          = {formatAmount(computedTotal)}
+        </span>
+      </div>
     </div>
   );
 }
@@ -170,6 +190,7 @@ export function CategoryItemsFieldArray({
           >
             <Plus /> Ajouter un poste
           </Button>
+
           <Button
             type="button"
             variant="outline"

@@ -64,14 +64,14 @@ export const appSettingsSchema = z.object({
   onboardingCompleted: z.boolean(),
   firstName: z.string().optional(),
   defaultBudgetMode: budgetModeSchema,
+  savingsObjectivePercent: z.number().min(0).max(1).optional(),
 });
 
 export const onboardingAnswersSchema = z.object({
   firstName: z.string().optional(),
   mode: budgetModeSchema.optional(),
   startingAmount: z.number().optional(),
-  initialGoalLabel: z.string().optional(),
-  initialGoalAmount: z.number().optional(),
+  savingsObjectivePercent: z.number().min(0).max(1).optional(),
 });
 
 export type OnboardingAnswersFormValues = z.infer<

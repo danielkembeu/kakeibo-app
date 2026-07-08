@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pencil } from "lucide-react";
+import { FileText } from "lucide-react";
 
 import { Button } from "@/features/shared/components/ui/button";
 import {
@@ -26,19 +26,25 @@ export function BudgetEntrySheet({
       <SheetTrigger
         render={
           <Button>
-            <Pencil /> Saisir / modifier le budget
+            <FileText />{" "}
+            <span className="hidden md:block">Saisir / modifier le budget</span>
           </Button>
         }
       />
-      <SheetContent>
-        <SheetHeader>
+
+      <SheetContent
+        side="bottom"
+        className="max-h-[85vh] md:flex md:flex-col md:items-center"
+      >
+        <SheetHeader className="lg:w-2xl">
           <SheetTitle>Budget du mois</SheetTitle>
+
           <SheetDescription>
             Revenu, mode et postes de dépenses par catégorie.
           </SheetDescription>
         </SheetHeader>
 
-        <div className="overflow-y-auto px-4 pb-4">
+        <div className="overflow-y-auto px-4 flex justify-cente">
           <BudgetEntryForm monthKey={monthKey} onSaved={() => setOpen(false)} />
         </div>
       </SheetContent>

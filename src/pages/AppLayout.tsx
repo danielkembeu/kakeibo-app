@@ -5,7 +5,8 @@ import { cn } from "@/features/shared/lib/utils";
 
 const NAV_ITEMS = [
   { to: "/", label: "Budget", end: true },
-  { to: "/roadmap", label: "Feuille de route", end: false },
+  { to: "/roadmap", label: "Épargne", end: false },
+  { to: "/projets", label: "Projets", end: false },
   { to: "/historique", label: "Historique", end: false },
   { to: "/profil", label: "Profil", end: false },
 ];
@@ -13,8 +14,8 @@ const NAV_ITEMS = [
 export function AppLayout() {
   return (
     <div className="mx-auto flex min-h-svh max-w-2xl flex-col gap-4 p-4">
-      <header className="flex items-center justify-between">
-        <div>
+      <header className="grid md:flex items-center justify-between">
+        <div className="mb-4 md:mb-0">
           <p className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
             家計簿
           </p>
@@ -22,7 +23,7 @@ export function AppLayout() {
           <h1 className="text-xl font-bold">Kakeibo</h1>
         </div>
 
-        <nav className="flex gap-1.5">
+        <nav className="flex gap-0.5 md:gap-1.5 items-center md:items-start">
           {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.to}

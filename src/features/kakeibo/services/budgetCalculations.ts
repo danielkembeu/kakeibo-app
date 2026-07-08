@@ -20,11 +20,14 @@ export function computeCategoryTotals(
     const total = items.reduce((sum, item) => sum + resolveItemAmount(item), 0)
     const ratio = budget.revenu > 0 ? total / budget.revenu : 0
 
+    // Compare rounded percentage points, not raw floating-point ratios —
+    // matches what the user actually sees/edits (e.g. "11%"), and avoids
+    // float-precision boundary flicker (11000/100000 vs 11/100).
     return {
       id: category.id,
       total,
       ratio,
-      overRecommended: ratio > category.recommendedRatio,
+      overRecommended: Math.round(ratio * 100) > Math.round(category.recommendedRatio * 100),
     }
   })
 }

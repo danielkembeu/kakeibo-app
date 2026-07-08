@@ -14,7 +14,9 @@ interface BudgetSummaryCardProps {
   monthKey: string;
 }
 
-export function BudgetSummaryCard({ monthKey }: BudgetSummaryCardProps) {
+export function BudgetSummaryCard({
+  monthKey,
+}: Readonly<BudgetSummaryCardProps>) {
   const { kpis } = useKpis(monthKey);
 
   return (

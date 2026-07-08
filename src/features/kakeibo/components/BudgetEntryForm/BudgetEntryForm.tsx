@@ -1,38 +1,46 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
-import { Button } from "@/features/shared/components/ui/button"
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "@/features/shared/components/ui/form"
+} from "@/features/shared/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/features/shared/components/ui/select"
-import { CategoryItemsFieldArray } from "@/features/kakeibo/components/BudgetEntryForm/CategoryItemsFieldArray"
-import { RevenueField } from "@/features/kakeibo/components/BudgetEntryForm/RevenueField"
-import { useSubmitBudget } from "@/features/kakeibo/hooks/useSubmitBudget"
-import { useCategories } from "@/features/kakeibo/hooks/useCategories"
+} from "@/features/shared/components/ui/select";
+import { CategoryItemsFieldArray } from "@/features/kakeibo/components/BudgetEntryForm/CategoryItemsFieldArray";
+import { RevenueField } from "@/features/kakeibo/components/BudgetEntryForm/RevenueField";
+import { useSubmitBudget } from "@/features/kakeibo/hooks/useSubmitBudget";
+import { useCategories } from "@/features/kakeibo/hooks/useCategories";
 import {
   budgetFormSchema,
   type BudgetFormValues,
-} from "@/features/kakeibo/lib/schemas"
+} from "@/features/kakeibo/lib/schemas";
 
 interface BudgetEntryFormProps {
-  monthKey: string
-  onSaved?: () => void
+  monthKey: string;
+  onSaved?: () => void;
 }
 
-export function BudgetEntryForm({ monthKey, onSaved }: BudgetEntryFormProps) {
-  const { budget, submit, isSaving } = useSubmitBudget(monthKey)
-  const { categories } = useCategories()
+const MODE_LABELS: Record<string, string> = {
+  recurring: "Salarié (récurrent)",
+  oneoff: "Ponctuel",
+};
+
+export function BudgetEntryForm({
+  monthKey,
+  onSaved,
+}: Readonly<BudgetEntryFormProps>) {
+  const { budget, submit, isSaving } = useSubmitBudget(monthKey);
+  const { categories } = useCategories();
 
   const form = useForm<BudgetFormValues>({
     resolver: zodResolver(budgetFormSchema),
@@ -41,16 +49,16 @@ export function BudgetEntryForm({ monthKey, onSaved }: BudgetEntryFormProps) {
       items: budget.items,
       isRecurring: budget.isRecurring,
     },
-  })
+  });
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(async (values) => {
-          await submit(values)
-          onSaved?.()
+          await submit(values);
+          onSaved?.();
         })}
-        className="space-y-4"
+        className="space-y-4 md:grid justify-center lg:max-w-2xl"
       >
         <FormField
           control={form.control}
@@ -64,7 +72,9 @@ export function BudgetEntryForm({ monthKey, onSaved }: BudgetEntryFormProps) {
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue>
+                      {(value: string) => MODE_LABELS[value] ?? value}
+                    </SelectValue>
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -75,8 +85,10 @@ export function BudgetEntryForm({ monthKey, onSaved }: BudgetEntryFormProps) {
             </FormItem>
           )}
         />
+
         <RevenueField control={form.control} />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+        <div className="grid md:grid-cols-2 gap-4 lg:max-w-2xl">
           {categories.map((category) => (
             <CategoryItemsFieldArray
               key={category.id}
@@ -85,10 +97,11 @@ export function BudgetEntryForm({ monthKey, onSaved }: BudgetEntryFormProps) {
             />
           ))}
         </div>
-        <Button type="submit" disabled={isSaving}>
+
+        <Button type="submit" disabled={isSaving} className="mb-16">
           {isSaving ? "Enregistrement..." : "Enregistrer le budget"}
         </Button>
       </form>
     </Form>
-  )
+  );
 }

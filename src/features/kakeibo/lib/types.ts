@@ -117,12 +117,19 @@ export interface AppSettings {
   onboardingCompleted: boolean
   firstName?: string
   defaultBudgetMode: BudgetMode
+  // Ratio (0-1) of revenu the user wants to set aside — configurable like a
+  // category's recommendedRatio, editable anytime from the Profile page.
+  savingsObjectivePercent?: number
 }
 
 export interface OnboardingAnswers {
   firstName?: string
   mode?: BudgetMode
   startingAmount?: number
-  initialGoalLabel?: string
-  initialGoalAmount?: number
+  savingsObjectivePercent?: number
+}
+
+export interface SavingsObjectiveTier {
+  label: string
+  percent: number
 }

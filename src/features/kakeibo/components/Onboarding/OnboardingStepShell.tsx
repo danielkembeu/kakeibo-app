@@ -32,7 +32,7 @@ export function OnboardingStepShell({
     <div className="flex min-h-svh flex-col gap-6 p-6 sm:mx-auto sm:max-w-md sm:justify-center">
       <OnboardingProgress step={step} />
 
-      <div className="flex-1 space-y-2 sm:flex-none">
+      <div className="flex-1 animate-in space-y-2 fade-in slide-in-from-bottom-3 duration-300 sm:flex-none">
         <h1 className="text-xl font-bold">{title}</h1>
         {description && (
           <p className="text-sm text-muted-foreground">{description}</p>

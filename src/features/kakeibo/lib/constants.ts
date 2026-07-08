@@ -1,4 +1,8 @@
-import type { CategoryDefinition } from "@/features/kakeibo/lib/types"
+import type {
+  BudgetMode,
+  CategoryDefinition,
+  SavingsObjectiveTier,
+} from "@/features/kakeibo/lib/types"
 
 export const DEFAULT_CATEGORIES: CategoryDefinition[] = [
   {
@@ -30,6 +34,23 @@ export const DEFAULT_CATEGORIES: CategoryDefinition[] = [
     recommendedRatio: 0.1,
   },
 ]
+
+// Suggested during onboarding, based on the mode-appropriate base amount
+// (monthly revenu for a recurring budget, the lump sum for a one-off one).
+// Always overridable afterwards — same "just a ratio" treatment as a
+// category's recommendedRatio, edited from the Profile page.
+export const SAVINGS_OBJECTIVE_TIERS: Record<BudgetMode, SavingsObjectiveTier[]> = {
+  recurring: [
+    { label: "Prudent", percent: 0.05 },
+    { label: "Équilibré", percent: 0.1 },
+    { label: "Ambitieux", percent: 0.2 },
+  ],
+  oneoff: [
+    { label: "Prudent", percent: 0.1 },
+    { label: "Équilibré", percent: 0.2 },
+    { label: "Ambitieux", percent: 0.3 },
+  ],
+}
 
 export const BUDGETS_STORAGE_KEY = "kakeibo:v1:budgets"
 export const GOALS_STORAGE_KEY = "kakeibo:v1:goals"
