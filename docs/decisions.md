@@ -65,9 +65,8 @@ multi-appareils).
   mois). Pas d'import CSV/XLSX — un tableur reformaté à la main casserait
   silencieusement une reconstruction d'état complexe (catégories imbriquées,
   objectifs, registre d'épargne).
-- *Point ouvert* : un vrai `.xlsx` (multi-feuilles, formaté) nécessite une petite
-  dépendance (type SheetJS). Le CSV ne nécessite aucune dépendance et s'ouvre
-  nativement dans Excel — à trancher dans le plan.
+- *Tranché* : CSV uniquement pour l'instant, zéro dépendance. Un vrai `.xlsx`
+  (multi-feuilles, formaté, nécessiterait SheetJS) est explicitement différé.
 
 ## 8. Analytics : décompte d'utilisateurs anonyme
 
@@ -126,3 +125,93 @@ tracker), boutons d'export globaux (JSON/CSV/XLSX) centralisés, suppression du
 localStorage en zone à risque avec AlertDialog de confirmation, et une section
 **« Kakeibo »** : mini documentaire sur la méthode (quoi/pourquoi/comment/quand),
 contenu statique basé sur [vision.md](./vision.md).
+
+---
+
+*Les décisions suivantes (15+) ont été prises après l'implémentation des 9
+premières phases ([plan.md](./plan.md)), en cours d'usage réel de l'app.*
+
+## 15. Séparation Projets / Épargne (feuille de route)
+
+Malentendu initial corrigé : le `SavingsGoal` nommé (avec contribution
+mensuelle) modélise un **projet d'achat**, pas l'objectif d'épargne général du
+pilier « Goal ». Décision : déplacer tel quel `SavingsGoalList` (et son
+formulaire, ses lignes, sa confirmation de contribution) vers une nouvelle page
+**Projets** (`/projets`). La page **Épargne** (`/roadmap`, renommée dans la nav)
+devient dédiée à un objectif d'épargne général unique — voir
+[vision.md](./vision.md#le-pilier-goal-se-scinde-en-deux-concepts-distincts).
+*Renommage volontairement limité au routing/nav et au contenu utilisateur — les
+symboles internes (`SavingsGoal`, `useSavingsGoals`, etc.) n'ont pas été
+renommés, pur refactor cosmétique à risque/bénéfice défavorable.*
+
+## 16. Objectif d'épargne général : configurable comme une catégorie, mais en montant
+
+`AppSettings.savingsObjectivePercent` (ratio 0-1) — éditable à tout moment,
+même mécanisme qu'un `recommendedRatio` de catégorie. Contrairement à une
+catégorie, le formulaire d'édition demande un **montant** (pas un pourcentage
+brut) et affiche le pourcentage correspondant calculé à partir du revenu du
+mois en cours — plus intuitif pour la plupart des utilisateurs que de raisonner
+directement en %.
+
+## 17. Onboarding : suggestion de 3 paliers plutôt qu'un projet nommé
+
+L'étape `ObjectifStep` (créait un projet d'achat) est remplacée par
+`SavingsObjectiveStep` : 3 paliers suggérés (Prudent/Équilibré/Ambitieux),
+calculés différemment selon le mode — % du revenu mensuel pour un salarié, %
+de la somme reçue pour un usage ponctuel (pas de cadence mensuelle imposée à un
+montant ponctuel). La création de projets nommés sort entièrement de
+l'onboarding.
+
+## 18. Feuille de route enrichie : graphe de tendance + régularité
+
+Deux ajouts pour éviter une page réduite à une seule carte : un graphe
+« marge vs objectif » sur les mois déjà saisis (vocabulaire volontairement
+« marge », pas « épargne réalisée », pour ne pas laisser croire à une
+confirmation comme sur Projets), et une statistique de régularité (« X/Y mois
+où l'objectif a été tenu »), toutes deux dérivées de `useBudgetHistory` déjà
+existant.
+
+## 19. Onboarding : écran d'accueil + import de sauvegarde dès l'entrée
+
+Avant la première question, un écran de bienvenue plein écran (« Bienvenue sur
+Kakeibo ») avec deux chemins : **Commencer** (bascule vers les questions
+habituelles) ou **Importer une sauvegarde (JSON)** — pour un nouvel
+appareil/navigateur, restaurer directement un export existant plutôt que de
+tout ressaisir. Un import réussi force `onboardingCompleted: true` et affiche
+un AlertDialog de confirmation explicite avant de rediriger vers `/`.
+
+## 20. Reprise d'onboarding après mise à jour de l'app
+
+Problème anticipé : un profil déjà onboardé avant l'ajout d'un nouveau champ
+requis (ex. `savingsObjectivePercent` ajouté après coup) se retrouverait
+bloqué en silence. Solution : `getMissingSettingsFields` détecte les champs
+`AppSettings` requis manquants indépendamment du flag `onboardingCompleted` ;
+si un manque, un AlertDialog explicite s'affiche par-dessus la page en cours
+(pas d'écran blanc), pré-remplit le brouillon d'onboarding avec ce qui est déjà
+connu, saute directement à la première étape manquante, et renvoie
+l'utilisateur exactement sur la page où il était une fois complété — sans
+jamais recréer le budget existant ni perdre de données.
+
+## 21. Correction : comparaison de pourcentage arrondie, pas flottante
+
+`overRecommended` comparait `ratio > recommendedRatio` en flottant brut : avec
+des montants réels non ronds, `11000/100000` peut différer d'un chouïa de
+`11/100` en précision IEEE 754, donnant un avertissement « Dépassement » qui ne
+disparaissait pas même après avoir aligné le seuil sur la valeur affichée.
+Fix : comparer les pourcentages arrondis (`Math.round(ratio*100) >
+Math.round(recommendedRatio*100)`), cohérent avec ce que l'utilisateur voit et
+édite.
+
+## 22. Contenu Kakeibo : histoire réelle plutôt que l'anecdote
+
+L'anecdote des deux seaux est remplacée par l'histoire réelle de la méthode
+(Hani Motoko, 1904, *Fujin no Tomo*) et son application théorique en boucle
+mensuelle — plus fidèle et plus intéressant qu'une parabole générique.
+
+## 23. Partage de lien : meta tags + bannière dédiée
+
+`index.html` reçoit un titre/description explicites, les balises Open Graph et
+Twitter Card, et une bannière dédiée (`public/og-banner.png`, générée depuis un
+SVG source conservé pour édition). Point d'attention documenté dans le HTML :
+WhatsApp et Facebook exigent des URLs absolues pour `og:image`/`og:url` — à
+mettre à jour avec le vrai domaine de production.

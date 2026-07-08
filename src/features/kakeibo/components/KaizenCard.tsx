@@ -63,7 +63,7 @@ export function KaizenCard({ monthKey }: Readonly<KaizenCardProps>) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Kaizen — comment s'améliorer ce mois-ci ?</CardTitle>
+        <CardTitle>Kaizen — comment m'améliorer ?</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {synthesis.comparison && (

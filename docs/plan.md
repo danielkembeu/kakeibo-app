@@ -1,5 +1,13 @@
 # Kakeibo — Plan d'implémentation
 
+> ✅ **Les 9 phases ci-dessous sont implémentées.** Ce document reste le
+> compte-rendu historique du plan initial. Les évolutions décidées et
+> construites après coup (séparation Projets/Épargne, objectif d'épargne
+> général, reprise d'onboarding, écran d'accueil + import de sauvegarde,
+> partage de lien...) sont documentées dans
+> [decisions.md](./decisions.md#15-séparation-projets--épargne-feuille-de-route)
+> à partir de la décision 15, pas ici.
+
 ## Context
 
 L'app Kakeibo (React 19 + Vite + TS + Tailwind v4 + shadcn "base-nova"/@base-ui/react + Zustand + TanStack Query + react-hook-form + Zod + Vitest) est aujourd'hui fonctionnelle mais reste un tracker de dépenses générique avec 4 catégories figées dans le code. Un brainstorming complet (voir `docs/vision.md` et `docs/decisions.md` dans le repo, déjà écrits et approuvés) a établi que l'app doit devenir une réplique fidèle et numérique de la méthode Kakeibo manuelle, pour deux profils (salarié en continu / non-salarié ponctuel), avec : catégories et items configurables, un vrai bilan Kaizen mensuel, une épargne confirmée (pas seulement projetée) avec visualisation de progression motivante, un thème sombre 100% automatique, une séparation nette consultation/édition (Sheet), un export/import de données, un onboarding de première visite, et une page Profil incluant un mini-documentaire sur la méthode. Couleur/dégradés restent réservés aux cartes stat et graphiques ; `framer-motion` est désinstallé au profit de CSS/`tw-animate-css`/View Transitions natives.
