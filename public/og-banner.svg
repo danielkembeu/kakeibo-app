@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#ffffff" />
+  <text x="600" y="270" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+    font-size="40" letter-spacing="10" fill="#8a8a8a">家計簿</text>
+  <text x="600" y="360" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+    font-size="72" font-weight="700" fill="#171717">Bienvenue sur Kakeibo</text>
+  <text x="600" y="410" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+    font-size="26" fill="#8a8a8a">La méthode japonaise de budget qui tient dans votre poche</text>
+</svg>
