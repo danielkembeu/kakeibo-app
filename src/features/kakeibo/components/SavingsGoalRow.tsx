@@ -26,9 +26,9 @@ export function SavingsGoalRow({ goal }: SavingsGoalRowProps) {
         </span>
       }
     >
-      <div className="space-y-2 pb-2">
+      <div className="space-y-2 pb-2 mb-5">
         <Progress value={progress.percent}>
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <div className="flex items-center justify-between w-full text-xs text-muted-foreground">
             <span>
               {formatAmount(progress.cumulative)} /{" "}
               {formatAmount(goal.targetAmount)}
@@ -44,6 +44,7 @@ export function SavingsGoalRow({ goal }: SavingsGoalRowProps) {
 
         <SavingsContributionAlertDialog goal={goal} />
       </div>
+
       <SavingsGoalForm goal={goal} />
     </CollapsibleRow>
   );
