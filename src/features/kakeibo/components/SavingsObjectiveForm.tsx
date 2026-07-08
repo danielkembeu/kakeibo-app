@@ -80,7 +80,7 @@ export function SavingsObjectiveForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Objectif d'épargne</CardTitle>
+        <CardTitle>Objectif d'achat</CardTitle>
         <CardDescription>
           Le montant que vous voulez systématiquement mettre de côté chaque
           mois.
