@@ -1,18 +1,20 @@
 import { useMemo } from "react"
 
-import { useBudgetMonths } from "@/features/kakeibo/hooks/useBudgetMonths"
+import { useRecurringBudgetMonths } from "@/features/kakeibo/hooks/useRecurringBudgetMonths"
+import { useCategories } from "@/features/kakeibo/hooks/useCategories"
 import { computeKpis } from "@/features/kakeibo/services/budgetCalculations"
 
 export function useBudgetHistory() {
-  const { data, isLoading } = useBudgetMonths()
+  const { data, isLoading: isBudgetsLoading } = useRecurringBudgetMonths()
+  const { categories, isLoading: isCategoriesLoading } = useCategories()
 
   const history = useMemo(
     () =>
       (data ?? [])
-        .map((budget) => ({ budget, kpis: computeKpis(budget) }))
+        .map((budget) => ({ budget, kpis: computeKpis(budget, categories) }))
         .reverse(),
-    [data]
+    [data, categories]
   )
 
-  return { history, isLoading }
+  return { history, isLoading: isBudgetsLoading || isCategoriesLoading }
 }

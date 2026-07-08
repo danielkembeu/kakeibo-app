@@ -1,14 +1,16 @@
 import { useMemo } from "react"
 
-import { useBudgetMonths } from "@/features/kakeibo/hooks/useBudgetMonths"
+import { useRecurringBudgetMonths } from "@/features/kakeibo/hooks/useRecurringBudgetMonths"
 import { useSavingsGoals } from "@/features/kakeibo/hooks/useSavingsGoals"
+import { useCategories } from "@/features/kakeibo/hooks/useCategories"
 import { buildRoadmap } from "@/features/kakeibo/services/projectionService"
 import { getCurrentMonthKey } from "@/features/kakeibo/lib/monthKey"
 
 export function useYearRoadmap() {
   const { data: explicitBudgets, isLoading: isBudgetsLoading } =
-    useBudgetMonths()
+    useRecurringBudgetMonths()
   const { goals, isLoading: isGoalsLoading } = useSavingsGoals()
+  const { categories, isLoading: isCategoriesLoading } = useCategories()
 
   const roadmap = useMemo(
     () =>
@@ -16,9 +18,13 @@ export function useYearRoadmap() {
         currentMonthKey: getCurrentMonthKey(),
         explicitBudgets: explicitBudgets ?? [],
         goals,
+        categories,
       }),
-    [explicitBudgets, goals]
+    [explicitBudgets, goals, categories]
   )
 
-  return { roadmap, isLoading: isBudgetsLoading || isGoalsLoading }
+  return {
+    roadmap,
+    isLoading: isBudgetsLoading || isGoalsLoading || isCategoriesLoading,
+  }
 }

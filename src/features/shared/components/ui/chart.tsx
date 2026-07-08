@@ -7,6 +7,12 @@ import type { TooltipValueType } from "recharts"
 import { cn } from "@/features/shared/lib/utils"
 
 // Format: { THEME_NAME: CSS_SELECTOR }
+// The ".dark" selector below never matches in this app (dark mode is driven
+// purely by `@media (prefers-color-scheme: dark)` in index.css, no `.dark`
+// class is ever toggled). Harmless: every ChartConfig here sets `color`
+// (a `var(--chart-N)` reference), never `theme`, so this emits identical
+// values under both selectors — the real re-theming happens one level down,
+// via the `--chart-N` tokens flipping in index.css.
 const THEMES = { light: "", dark: ".dark" } as const
 
 const INITIAL_DIMENSION = { width: 320, height: 200 } as const

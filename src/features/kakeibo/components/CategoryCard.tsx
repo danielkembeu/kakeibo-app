@@ -37,7 +37,14 @@ export function CategoryCard({
         ) : (
           items.map((item) => (
             <div key={item.id} className="flex justify-between gap-2 text-xs">
-              <span className="flex-1 text-muted-foreground">{item.name}</span>
+              <span className="flex-1 text-muted-foreground">
+                {item.name}
+                {item.computed && (
+                  <span className="block text-[10px] text-muted-foreground/70">
+                    {item.computed.quantity} × {formatAmount(item.computed.unitAmount)}
+                  </span>
+                )}
+              </span>
               <span className="font-mono font-medium">
                 {formatAmount(item.amount)}
               </span>

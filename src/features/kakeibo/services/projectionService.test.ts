@@ -2,10 +2,11 @@ import { describe, expect, it } from "vitest"
 
 import { buildRoadmap } from "@/features/kakeibo/services/projectionService"
 import { createEmptyBudget } from "@/features/kakeibo/services/budgetCalculations"
+import { TEST_CATEGORIES } from "@/features/kakeibo/lib/testFixtures"
 import type { MonthlyBudget, SavingsGoal } from "@/features/kakeibo/lib/types"
 
 function budgetFor(monthKey: string, revenu: number): MonthlyBudget {
-  return { ...createEmptyBudget(monthKey), revenu }
+  return { ...createEmptyBudget(monthKey, TEST_CATEGORIES), revenu }
 }
 
 describe("buildRoadmap", () => {
@@ -14,6 +15,7 @@ describe("buildRoadmap", () => {
       currentMonthKey: "2026-10",
       explicitBudgets: [budgetFor("2026-10", 100000)],
       goals: [],
+      categories: TEST_CATEGORIES,
     })
 
     expect(roadmap.months.map((m) => m.monthKey)).toEqual([
@@ -28,6 +30,7 @@ describe("buildRoadmap", () => {
       currentMonthKey: "2026-10",
       explicitBudgets: [budgetFor("2026-10", 100000)],
       goals: [],
+      categories: TEST_CATEGORIES,
     })
 
     const november = roadmap.months.find((m) => m.monthKey === "2026-11")
@@ -43,6 +46,7 @@ describe("buildRoadmap", () => {
         budgetFor("2026-11", 150000),
       ],
       goals: [],
+      categories: TEST_CATEGORIES,
     })
 
     const november = roadmap.months.find((m) => m.monthKey === "2026-11")
@@ -63,6 +67,7 @@ describe("buildRoadmap", () => {
       currentMonthKey: "2026-10",
       explicitBudgets: [budgetFor("2026-10", 200000)],
       goals: [goal],
+      categories: TEST_CATEGORIES,
     })
 
     expect(roadmap.months.at(-1)?.monthKey).toBe("2027-02")
@@ -90,6 +95,7 @@ describe("buildRoadmap", () => {
       currentMonthKey: "2026-10",
       explicitBudgets: [budgetFor("2026-10", 200000)],
       goals: [goal],
+      categories: TEST_CATEGORIES,
     })
 
     expect(roadmap.months.at(-1)?.monthKey).toBe("2026-12")
@@ -115,6 +121,7 @@ describe("buildRoadmap", () => {
       currentMonthKey: "2026-10",
       explicitBudgets: [budgetFor("2026-10", 500000)],
       goals: [bike, car],
+      categories: TEST_CATEGORIES,
     })
 
     const november = roadmap.months.find((m) => m.monthKey === "2026-11")

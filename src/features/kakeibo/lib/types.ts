@@ -1,9 +1,19 @@
-export type BudgetCategoryId = "survie" | "engagement" | "desirs" | "imprevus"
+export type BudgetCategoryId = string
+
+export interface BudgetItemComputed {
+  unitAmount: number
+  quantity: number
+  defaultQuantity: number
+}
 
 export interface BudgetItem {
   id: string
   name: string
+  // Always the effective total. For a computed item this is kept in sync
+  // with quantity * unitAmount at save time — every reader can trust
+  // `amount` without knowing whether the item is computed.
   amount: number
+  computed?: BudgetItemComputed
 }
 
 export type BudgetItemsByCategory = Record<BudgetCategoryId, BudgetItem[]>
@@ -12,6 +22,7 @@ export interface MonthlyBudget {
   monthKey: string
   revenu: number
   items: BudgetItemsByCategory
+  isRecurring: boolean
 }
 
 export interface SavingsGoal {
@@ -20,6 +31,31 @@ export interface SavingsGoal {
   targetAmount: number
   monthlyContribution: number
   startMonthKey: string
+}
+
+export interface SavingsContribution {
+  id: string
+  goalId: string
+  monthKey: string
+  amount: number
+  confirmedAt: string
+}
+
+export interface KaizenNote {
+  monthKey: string
+  promise: string
+  createdAt: string
+}
+
+export interface KaizenComparison {
+  revenuDelta: number
+  depensesDelta: number
+  disponibleDelta: number
+}
+
+export interface KaizenSynthesis {
+  recommendations: Recommendation[]
+  comparison: KaizenComparison | null
 }
 
 export interface CategoryDefinition {
@@ -73,4 +109,20 @@ export interface RoadmapMonth {
 export interface Roadmap {
   months: RoadmapMonth[]
   goals: SavingsGoal[]
+}
+
+export type BudgetMode = "recurring" | "oneoff"
+
+export interface AppSettings {
+  onboardingCompleted: boolean
+  firstName?: string
+  defaultBudgetMode: BudgetMode
+}
+
+export interface OnboardingAnswers {
+  firstName?: string
+  mode?: BudgetMode
+  startingAmount?: number
+  initialGoalLabel?: string
+  initialGoalAmount?: number
 }

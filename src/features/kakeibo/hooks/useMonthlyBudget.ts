@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { localStorageBudgetRepository } from "@/features/kakeibo/services/budgetRepository"
 import { createEmptyBudget } from "@/features/kakeibo/services/budgetCalculations"
+import { useCategories } from "@/features/kakeibo/hooks/useCategories"
 import type { MonthlyBudget } from "@/features/kakeibo/lib/types"
 
 export function budgetQueryKey(monthKey: string) {
@@ -10,13 +11,15 @@ export function budgetQueryKey(monthKey: string) {
 
 export function useMonthlyBudget(monthKey: string) {
   const queryClient = useQueryClient()
+  const { categories, isLoading: isCategoriesLoading } = useCategories()
 
   const query = useQuery({
     queryKey: budgetQueryKey(monthKey),
     queryFn: async () => {
       const budget = await localStorageBudgetRepository.getMonth(monthKey)
-      return budget ?? createEmptyBudget(monthKey)
+      return budget ?? createEmptyBudget(monthKey, categories)
     },
+    enabled: !isCategoriesLoading,
   })
 
   const saveBudget = useMutation({
@@ -29,8 +32,8 @@ export function useMonthlyBudget(monthKey: string) {
   })
 
   return {
-    budget: query.data ?? createEmptyBudget(monthKey),
-    isLoading: query.isLoading,
+    budget: query.data ?? createEmptyBudget(monthKey, categories),
+    isLoading: query.isLoading || isCategoriesLoading,
     saveBudget: saveBudget.mutateAsync,
     isSaving: saveBudget.isPending,
   }

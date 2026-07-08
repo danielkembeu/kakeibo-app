@@ -1,11 +1,16 @@
 import { nanoid } from "nanoid"
 
 import { useMonthlyBudget } from "@/features/kakeibo/hooks/useMonthlyBudget"
+import { resolveItemAmount } from "@/features/kakeibo/services/budgetCalculations"
 import type { BudgetFormValues } from "@/features/kakeibo/lib/schemas"
 import type { BudgetItem, MonthlyBudget } from "@/features/kakeibo/lib/types"
 
-function withIds(items: BudgetItem[]): BudgetItem[] {
-  return items.map((item) => ({ ...item, id: item.id || nanoid() }))
+function withIdsAndResolvedAmounts(items: BudgetItem[]): BudgetItem[] {
+  return items.map((item) => ({
+    ...item,
+    id: item.id || nanoid(),
+    amount: resolveItemAmount(item),
+  }))
 }
 
 export function useSubmitBudget(monthKey: string) {
@@ -15,13 +20,15 @@ export function useSubmitBudget(monthKey: string) {
     const updated: MonthlyBudget = {
       monthKey,
       revenu: values.revenu,
-      items: {
-        survie: withIds(values.items.survie),
-        engagement: withIds(values.items.engagement),
-        desirs: withIds(values.items.desirs),
-        imprevus: withIds(values.items.imprevus),
-      },
+      isRecurring: values.isRecurring,
+      items: Object.fromEntries(
+        Object.entries(values.items).map(([categoryId, items]) => [
+          categoryId,
+          withIdsAndResolvedAmounts(items),
+        ])
+      ),
     }
+    
     return saveBudget(updated)
   }
 

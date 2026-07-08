@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { to: "/", label: "Budget", end: true },
   { to: "/roadmap", label: "Feuille de route", end: false },
   { to: "/historique", label: "Historique", end: false },
+  { to: "/profil", label: "Profil", end: false },
 ];
 
 export function AppLayout() {

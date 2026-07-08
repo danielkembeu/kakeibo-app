@@ -1,7 +1,7 @@
 import { CategoryCard } from "@/features/kakeibo/components/CategoryCard"
 import { useKpis } from "@/features/kakeibo/hooks/useKpis"
 import { useMonthlyBudget } from "@/features/kakeibo/hooks/useMonthlyBudget"
-import { KAKEIBO_CATEGORIES } from "@/features/kakeibo/lib/constants"
+import { useCategories } from "@/features/kakeibo/hooks/useCategories"
 
 interface CategoryBreakdownProps {
   monthKey: string
@@ -10,10 +10,11 @@ interface CategoryBreakdownProps {
 export function CategoryBreakdown({ monthKey }: CategoryBreakdownProps) {
   const { budget } = useMonthlyBudget(monthKey)
   const { kpis } = useKpis(monthKey)
+  const { categories } = useCategories()
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-      {KAKEIBO_CATEGORIES.map((category) => {
+      {categories.map((category) => {
         const categoryTotal = kpis.categoryTotals.find(
           (c) => c.id === category.id
         )

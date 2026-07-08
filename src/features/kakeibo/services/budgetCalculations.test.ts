@@ -4,10 +4,12 @@ import {
   computeKpis,
   createEmptyBudget,
 } from "@/features/kakeibo/services/budgetCalculations"
+import { TEST_CATEGORIES } from "@/features/kakeibo/lib/testFixtures"
 import type { MonthlyBudget } from "@/features/kakeibo/lib/types"
 
-function budgetWith(overrides: Partial<MonthlyBudget["items"]>, revenu: number) {
-  const base = createEmptyBudget("2026-07")
+function budgetWith(overrides: MonthlyBudget["items"], revenu: number) {
+  const base = createEmptyBudget("2026-07", TEST_CATEGORIES)
+
   return {
     ...base,
     revenu,
@@ -22,7 +24,7 @@ describe("computeKpis", () => {
       50000
     )
 
-    const kpis = computeKpis(budget)
+    const kpis = computeKpis(budget, TEST_CATEGORIES)
 
     expect(kpis.totalDepenses).toBe(80000)
     expect(kpis.disponible).toBe(-30000)
@@ -35,7 +37,7 @@ describe("computeKpis", () => {
       100000
     )
 
-    const kpis = computeKpis(budget)
+    const kpis = computeKpis(budget, TEST_CATEGORIES)
     const desirs = kpis.categoryTotals.find((c) => c.id === "desirs")
 
     expect(desirs?.ratio).toBeCloseTo(0.4)
@@ -48,7 +50,7 @@ describe("computeKpis", () => {
       100000
     )
 
-    const kpis = computeKpis(budget)
+    const kpis = computeKpis(budget, TEST_CATEGORIES)
     const desirs = kpis.categoryTotals.find((c) => c.id === "desirs")
 
     expect(desirs?.overRecommended).toBe(false)

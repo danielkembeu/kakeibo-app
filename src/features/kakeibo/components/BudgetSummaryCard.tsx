@@ -1,24 +1,24 @@
-import { Badge } from "@/features/shared/components/ui/badge"
+import { Badge } from "@/features/shared/components/ui/badge";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/features/shared/components/ui/card"
-import { Progress } from "@/features/shared/components/ui/progress"
-import { cn } from "@/features/shared/lib/utils"
-import { useKpis } from "@/features/kakeibo/hooks/useKpis"
-import { formatAmount } from "@/features/kakeibo/lib/format"
+} from "@/features/shared/components/ui/card";
+import { Progress } from "@/features/shared/components/ui/progress";
+import { cn } from "@/features/shared/lib/utils";
+import { useKpis } from "@/features/kakeibo/hooks/useKpis";
+import { formatAmount } from "@/features/kakeibo/lib/format";
 
 interface BudgetSummaryCardProps {
-  monthKey: string
+  monthKey: string;
 }
 
 export function BudgetSummaryCard({ monthKey }: BudgetSummaryCardProps) {
-  const { kpis } = useKpis(monthKey)
+  const { kpis } = useKpis(monthKey);
 
   return (
-    <Card>
+    <Card className={kpis.isDeficit ? "bg-stat-expense" : "bg-stat-income"}>
       <CardHeader className="flex-row items-start justify-between">
         <div>
           <CardTitle>Revenu mensuel</CardTitle>
@@ -33,7 +33,7 @@ export function BudgetSummaryCard({ monthKey }: BudgetSummaryCardProps) {
           <p
             className={cn(
               "mt-1 font-mono text-2xl font-bold",
-              kpis.isDeficit && "text-destructive"
+              kpis.isDeficit && "text-destructive",
             )}
           >
             {formatAmount(kpis.disponible)}
@@ -45,8 +45,9 @@ export function BudgetSummaryCard({ monthKey }: BudgetSummaryCardProps) {
           <span>Dépenses : {formatAmount(kpis.totalDepenses)}</span>
           <span>{kpis.depensesRatio}%</span>
         </div>
+
         <Progress value={kpis.depensesRatio} />
       </CardContent>
     </Card>
-  )
+  );
 }

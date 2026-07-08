@@ -1,6 +1,6 @@
 import type { CategoryDefinition } from "@/features/kakeibo/lib/types"
 
-export const KAKEIBO_CATEGORIES: CategoryDefinition[] = [
+export const DEFAULT_CATEGORIES: CategoryDefinition[] = [
   {
     id: "survie",
     emoji: "🍚",
@@ -33,3 +33,8 @@ export const KAKEIBO_CATEGORIES: CategoryDefinition[] = [
 
 export const BUDGETS_STORAGE_KEY = "kakeibo:v1:budgets"
 export const GOALS_STORAGE_KEY = "kakeibo:v1:goals"
+export const CATEGORIES_STORAGE_KEY = "kakeibo:v1:categories"
+export const SAVINGS_CONTRIBUTIONS_STORAGE_KEY = "kakeibo:v1:contributions"
+export const KAIZEN_STORAGE_KEY = "kakeibo:v1:kaizen"
+export const SETTINGS_STORAGE_KEY = "kakeibo:v1:settings"
+export const ONBOARDING_ANSWERS_STORAGE_KEY = "kakeibo:v1:onboarding-answers"
