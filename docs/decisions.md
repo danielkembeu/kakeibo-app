@@ -208,6 +208,18 @@ L'anecdote des deux seaux est remplacée par l'histoire réelle de la méthode
 (Hani Motoko, 1904, *Fujin no Tomo*) et son application théorique en boucle
 mensuelle — plus fidèle et plus intéressant qu'une parabole générique.
 
+## 24. Disponibilité pour un projet : après l'objectif d'épargne général, pas le disponible brut
+
+Sur `/projets`, définir une épargne mensuelle pour un projet ne peut pas se
+baser sur le disponible brut du budget — l'objectif d'épargne général (page
+Épargne) est censé être décidé *avant* le reste, donc doit déjà être retiré du
+montant de référence. `computeAvailableForProjects` (dans `savingsService.ts`)
+calcule : disponible − (revenu × objectif d'épargne) − contributions déjà
+engagées par les autres projets actifs. `SavingsGoalForm` affiche ce montant en
+repère et avertit (sans bloquer la sauvegarde, cohérent avec le reste de l'app
+— ex. un budget en déficit reste enregistrable) si l'épargne mensuelle saisie
+le dépasse.
+
 ## 23. Partage de lien : meta tags + bannière dédiée
 
 `index.html` reçoit un titre/description explicites, les balises Open Graph et
