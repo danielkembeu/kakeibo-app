@@ -13,36 +13,47 @@ import {
   type ChartConfig,
 } from "@/features/shared/components/ui/chart";
 import { useAppSettings } from "@/features/kakeibo/hooks/useAppSettings";
-import { useBudgetHistory } from "@/features/kakeibo/hooks/useBudgetHistory";
+import { useYearToDateRoadmap } from "@/features/kakeibo/hooks/useYearToDateRoadmap";
 import { monthKeyToLabel } from "@/features/kakeibo/lib/format";
 
 const chartConfig = {
-  marge: { label: "Disponible", color: "var(--chart-2)" },
-  objectif: { label: "Objectif", color: "var(--chart-4)" },
+  margeCumulee: { label: "Marge cumulée", color: "var(--chart-2)" },
+  objectifCumule: { label: "Épargne cumulée", color: "var(--chart-4)" },
 } satisfies ChartConfig;
 
-export function SavingsObjectiveTrendChart() {
+export function SavingsCumulativeChart() {
   const { settings } = useAppSettings();
-  const { history, isLoading } = useBudgetHistory();
+  const { roadmap, isLoading } = useYearToDateRoadmap();
 
   const percent = settings?.savingsObjectivePercent;
-  if (isLoading || !percent || history.length === 0) return null;
 
-  // useBudgetHistory returns most-recent-first; a trend chart reads
-  // chronologically left to right.
-  const data = [...history].reverse().map(({ budget, kpis }) => ({
-    label: monthKeyToLabel(budget.monthKey),
-    marge: kpis.disponible,
-    objectif: kpis.revenu * percent,
-  }));
+  if (isLoading || !percent || roadmap.months.length === 0) return null;
+
+  let margeCumulee = 0;
+  let objectifCumule = 0;
+
+  const data = roadmap.months.map((month) => {
+    margeCumulee += month.disponible;
+    objectifCumule += month.revenu * percent;
+
+    return {
+      label: monthKeyToLabel(month.monthKey),
+      margeCumulee,
+      objectifCumule,
+    };
+  });
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Tendance mensuelle</CardTitle>
+        <CardTitle>Cumul d'épargnes</CardTitle>
       </CardHeader>
+
       <CardContent>
-        <ChartContainer config={chartConfig} className="aspect-auto h-64 w-full">
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto h-64 w-full"
+        >
           <AreaChart data={data}>
             <CartesianGrid vertical={false} />
 
@@ -56,19 +67,19 @@ export function SavingsObjectiveTrendChart() {
             <ChartTooltip content={<ChartTooltipContent />} />
 
             <Area
-              dataKey="marge"
+              dataKey="margeCumulee"
               type="monotone"
-              fill="var(--color-marge)"
+              fill="var(--color-margeCumulee)"
               fillOpacity={0.15}
-              stroke="var(--color-marge)"
+              stroke="var(--color-margeCumulee)"
             />
 
             <Area
-              dataKey="objectif"
+              dataKey="objectifCumule"
               type="monotone"
-              fill="var(--color-objectif)"
+              fill="var(--color-objectifCumule)"
               fillOpacity={0.1}
-              stroke="var(--color-objectif)"
+              stroke="var(--color-objectifCumule)"
               strokeDasharray="4 4"
             />
           </AreaChart>

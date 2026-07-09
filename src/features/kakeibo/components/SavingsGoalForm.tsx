@@ -129,7 +129,7 @@ export function SavingsGoalForm({ goal }: SavingsGoalFormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit">
+        <Button type="submit" disabled={exceedsAvailable}>
           {goal ? "Mettre à jour" : "Ajouter l'objectif"}
         </Button>
         {goal && (

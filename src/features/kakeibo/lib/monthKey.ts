@@ -1,4 +1,4 @@
-import { addMonths, endOfYear, format, parse } from "date-fns"
+import { addMonths, endOfYear, format, parse, startOfYear } from "date-fns"
 
 const MONTH_KEY_FORMAT = "yyyy-MM"
 
@@ -20,6 +20,10 @@ export function shiftMonthKey(monthKey: string, months: number): string {
 
 export function getYearEndMonthKey(monthKey: string): string {
   return dateToMonthKey(endOfYear(monthKeyToDate(monthKey)))
+}
+
+export function getYearStartMonthKey(monthKey: string): string {
+  return dateToMonthKey(startOfYear(monthKeyToDate(monthKey)))
 }
 
 export function isMonthKeyAfter(a: string, b: string): boolean {

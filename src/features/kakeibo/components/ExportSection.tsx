@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Download, Upload } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   AlertDialog,
@@ -67,6 +68,12 @@ export function ExportSection() {
     await localStorageBudgetRepository.importState(pendingImport);
     setPendingImport(null);
     await queryClient.invalidateQueries({ queryKey: ["kakeibo"] });
+    toast.success("Données importées avec succès.");
+  };
+
+  const exportJson = async () => {
+    await downloadJsonExport();
+    toast.success("Export JSON téléchargé.");
   };
 
   const exportCsv = () => {
@@ -75,6 +82,7 @@ export function ExportSection() {
       budgetToCsv(budget, categories),
       "text/csv",
     );
+    toast.success("Export CSV téléchargé.");
   };
 
   return (
@@ -84,7 +92,7 @@ export function ExportSection() {
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={downloadJsonExport}>
+          <Button variant="outline" size="sm" onClick={exportJson}>
             <Download /> Exporter (JSON)
           </Button>
           <Button variant="outline" size="sm" onClick={exportCsv}>

@@ -18,12 +18,20 @@ export function useCategories() {
       localStorageBudgetRepository.saveCategory(category),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY }),
+    meta: {
+      successMessage: "Catégorie enregistrée.",
+      errorMessage: "Échec de l'enregistrement de la catégorie.",
+    },
   });
 
   const deleteCategory = useMutation({
     mutationFn: (id: string) => localStorageBudgetRepository.deleteCategory(id),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY }),
+    meta: {
+      successMessage: "Catégorie supprimée.",
+      errorMessage: "Échec de la suppression de la catégorie.",
+    },
   });
 
   return {

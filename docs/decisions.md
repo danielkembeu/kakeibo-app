@@ -208,6 +208,14 @@ L'anecdote des deux seaux est remplacée par l'histoire réelle de la méthode
 (Hani Motoko, 1904, *Fujin no Tomo*) et son application théorique en boucle
 mensuelle — plus fidèle et plus intéressant qu'une parabole générique.
 
+## 23. Partage de lien : meta tags + bannière dédiée
+
+`index.html` reçoit un titre/description explicites, les balises Open Graph et
+Twitter Card, et une bannière dédiée (`public/og-banner.png`, générée depuis un
+SVG source conservé pour édition). Point d'attention documenté dans le HTML :
+WhatsApp et Facebook exigent des URLs absolues pour `og:image`/`og:url` — à
+mettre à jour avec le vrai domaine de production.
+
 ## 24. Disponibilité pour un projet : après l'objectif d'épargne général, pas le disponible brut
 
 Sur `/projets`, définir une épargne mensuelle pour un projet ne peut pas se
@@ -216,14 +224,54 @@ baser sur le disponible brut du budget — l'objectif d'épargne général (page
 montant de référence. `computeAvailableForProjects` (dans `savingsService.ts`)
 calcule : disponible − (revenu × objectif d'épargne) − contributions déjà
 engagées par les autres projets actifs. `SavingsGoalForm` affiche ce montant en
-repère et avertit (sans bloquer la sauvegarde, cohérent avec le reste de l'app
-— ex. un budget en déficit reste enregistrable) si l'épargne mensuelle saisie
-le dépasse.
+repère. *Révisé en décision 26 : ce garde-fou est passé de simple
+avertissement à un vrai blocage.*
 
-## 23. Partage de lien : meta tags + bannière dédiée
+## 25. Toasts globaux sur les mutations
 
-`index.html` reçoit un titre/description explicites, les balises Open Graph et
-Twitter Card, et une bannière dédiée (`public/og-banner.png`, générée depuis un
-SVG source conservé pour édition). Point d'attention documenté dans le HTML :
-WhatsApp et Facebook exigent des URLs absolues pour `og:image`/`og:url` — à
-mettre à jour avec le vrai domaine de production.
+Ajout de **sonner** (choix shadcn standard) pour donner un retour explicite à
+chaque opération lancée par l'utilisateur. Plutôt que d'ajouter un appel toast
+à la main dans chacune des mutations, un `MutationCache` central
+(`query-client.ts`) déclenche automatiquement un toast de succès/erreur pour
+*toute* mutation, en lisant `meta.successMessage`/`meta.errorMessage` déclarés
+sur chaque `useMutation`. Seule exception explicite : la sauvegarde des
+réponses d'onboarding (`useOnboardingAnswers`), qui écrit à chaque écran —
+passée en `meta.silent` pour éviter un toast à chaque "Suivant". Le composant
+shadcn `sonner.tsx` scaffoldé dépendait de `next-themes` pour le thème ; retiré
+et remplacé par `theme="system"` codé en dur, puisque sonner lit déjà
+nativement `prefers-color-scheme` sans avoir besoin d'un theme provider — pas
+de nouvelle dépendance pour une infra de thème qu'on a explicitement décidé de
+ne pas avoir (décision 9).
+
+## 26. Marge dépassée sur un projet : blocage plutôt qu'avertissement
+
+Suite retour utilisateur : "on ne peut pas dire qu'on gardera 10 000/mois si,
+après épargne, il reste moins de 10 000". Le bouton de sauvegarde de
+`SavingsGoalForm` est désormais `disabled` (pas seulement un texte
+d'avertissement) quand le montant saisi dépasse `computeAvailableForProjects`
+— valable pour la création et l'édition. `SavingsGoalList` va plus loin : si
+la marge pour un **nouveau** projet (calculée sans exclure aucun projet
+existant) est déjà à 0, le point d'entrée "+ Ajouter un objectif d'épargne"
+est remplacé par un message explicatif plutôt que par le formulaire.
+
+## 27. Kaizen : la promesse bascule entre saisie et affichage
+
+`KaizenCard` n'affiche le textarea que s'il n'y a pas encore de promesse pour
+le mois en cours ; une fois soumise, elle s'affiche dans un cadre en lecture
+seule avec un bouton **Modifier** pour rouvrir l'édition. La bascule est
+dérivée de la présence de `note` pour le `monthKey` courant (pas d'état
+manuel à resynchroniser dans le handler de sauvegarde) — un nouveau mois sans
+promesse retombe automatiquement en mode saisie.
+
+## 28. Graphe cumulatif jusqu'à fin d'année, sur la même base de projection
+
+Ajout d'un second graphe sur `/roadmap` : cumul de la marge et de l'objectif
+mois après mois, jusqu'à décembre — toujours, même si peu de mois sont encore
+renseignés. Plutôt que d'écrire une nouvelle logique de projection,
+`useYearToDateRoadmap` réutilise `buildRoadmap` (déjà écrit pour `/projets`)
+en le faisant simplement démarrer en **janvier** de l'année en cours au lieu
+de "maintenant" — la fonction reconstitue alors le passé connu et reconduit le
+dernier budget connu pour le reste de l'année, sans code de projection
+dupliqué. Chaque graphe de la page reçoit désormais un titre de section
+("Tendance mensuelle" / "Cumul jusqu'à fin d'année"), affiché dans un `Card`
+comme le reste de l'app.

@@ -28,6 +28,7 @@ export function BudgetEntrySheet({
           <Button>
             <FileText />{" "}
             <span className="hidden md:block">Saisir / modifier le budget</span>
+            <span className="block md:hidden">Budget</span>
           </Button>
         }
       />

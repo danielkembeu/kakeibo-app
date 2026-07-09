@@ -18,12 +18,20 @@ export function useSavingsGoals() {
       localStorageBudgetRepository.saveGoal(goal),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: GOALS_QUERY_KEY }),
+    meta: {
+      successMessage: "Projet enregistré.",
+      errorMessage: "Échec de l'enregistrement du projet.",
+    },
   })
 
   const deleteGoal = useMutation({
     mutationFn: (id: string) => localStorageBudgetRepository.deleteGoal(id),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: GOALS_QUERY_KEY }),
+    meta: {
+      successMessage: "Projet supprimé.",
+      errorMessage: "Échec de la suppression du projet.",
+    },
   })
 
   return {

@@ -29,6 +29,10 @@ export function useMonthlyBudget(monthKey: string) {
       queryClient.setQueryData(budgetQueryKey(budget.monthKey), budget)
       queryClient.invalidateQueries({ queryKey: ["kakeibo", "months"] })
     },
+    meta: {
+      successMessage: "Budget enregistré.",
+      errorMessage: "Échec de l'enregistrement du budget.",
+    },
   })
 
   return {

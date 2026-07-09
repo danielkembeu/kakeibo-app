@@ -21,6 +21,10 @@ export function useSavingsContributions() {
     ) => localStorageBudgetRepository.saveContribution(contribution),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: CONTRIBUTIONS_QUERY_KEY }),
+    meta: {
+      successMessage: "Épargne confirmée.",
+      errorMessage: "Échec de la confirmation.",
+    },
   })
 
   return {

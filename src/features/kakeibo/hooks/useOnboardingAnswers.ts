@@ -19,6 +19,9 @@ export function useOnboardingAnswers() {
     onSuccess: (answers) => {
       queryClient.setQueryData(ANSWERS_QUERY_KEY, answers)
     },
+    // Fires on every onboarding screen's "Suivant" — a toast here would just
+    // be noise, not feedback the user asked for.
+    meta: { silent: true },
   })
 
   return {

@@ -20,6 +20,10 @@ export function useKaizenNote(monthKey: string) {
     onSuccess: (note) => {
       queryClient.setQueryData(kaizenQueryKey(note.monthKey), note)
     },
+    meta: {
+      successMessage: "Promesse enregistrée.",
+      errorMessage: "Échec de l'enregistrement de la promesse.",
+    },
   })
 
   return {
