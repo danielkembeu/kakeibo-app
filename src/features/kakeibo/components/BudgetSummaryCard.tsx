@@ -28,6 +28,7 @@ export function BudgetSummaryCard({
             {formatAmount(kpis.revenu)}
           </p>
         </div>
+
         <div className="text-right">
           <Badge variant={kpis.isDeficit ? "destructive" : "secondary"}>
             {kpis.isDeficit ? "Déficit" : "Disponible"}
@@ -42,6 +43,7 @@ export function BudgetSummaryCard({
           </p>
         </div>
       </CardHeader>
+
       <CardContent className="space-y-1.5">
         <div className="flex justify-between text-xs text-muted-foreground">
           <span>Dépenses : {formatAmount(kpis.totalDepenses)}</span>

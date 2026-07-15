@@ -1,19 +1,23 @@
-import { Badge } from "@/features/shared/components/ui/badge"
+import { Badge } from "@/features/shared/components/ui/badge";
 import {
   Card,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/features/shared/components/ui/card"
-import { formatAmount } from "@/features/kakeibo/lib/format"
-import type { BudgetItem, CategoryDefinition } from "@/features/kakeibo/lib/types"
+} from "@/features/shared/components/ui/card";
+import { formatAmount } from "@/features/kakeibo/lib/format";
+import type {
+  BudgetItem,
+  CategoryDefinition,
+} from "@/features/kakeibo/lib/types";
 
 interface CategoryCardProps {
-  category: CategoryDefinition
-  items: BudgetItem[]
-  total: number
-  ratio: number
-  overRecommended: boolean
+  category: CategoryDefinition;
+  items: BudgetItem[];
+  total: number;
+  ratio: number;
+  overRecommended: boolean;
 }
 
 export function CategoryCard({
@@ -22,45 +26,56 @@ export function CategoryCard({
   total,
   ratio,
   overRecommended,
-}: CategoryCardProps) {
+}: Readonly<CategoryCardProps>) {
   return (
-    <Card size="sm">
+    <Card size="sm" className="relative">
       <CardHeader className="flex-row items-center justify-between">
         <CardTitle>
           {category.emoji} {category.label}
         </CardTitle>
         {overRecommended && <Badge variant="destructive">Dépassement</Badge>}
       </CardHeader>
-      <CardContent className="space-y-1">
-        {items.length === 0 ? (
-          <p className="text-xs italic text-muted-foreground">Non budgété</p>
-        ) : (
-          items.map((item) => (
-            <div key={item.id} className="flex justify-between gap-2 text-xs">
-              <span className="flex-1 text-muted-foreground">
-                {item.name}
-                {item.computed && (
-                  <span className="block text-[10px] text-muted-foreground/70">
-                    {item.computed.quantity} × {formatAmount(item.computed.unitAmount)}
-                  </span>
-                )}
-              </span>
-              <span className="font-mono font-medium">
-                {formatAmount(item.amount)}
-              </span>
-            </div>
-          ))
-        )}
-        <div className="mt-2 flex items-center justify-between border-t pt-2">
-          <span className="text-xs text-muted-foreground">Total</span>
-          <span className="font-mono text-sm font-bold">
-            {formatAmount(total)}
-          </span>
+
+      <CardContent className="space-y-1 flex flex-col justify-between h-full">
+        <div>
+          {items.length === 0 ? (
+            <p className="text-xs italic text-muted-foreground">Non budgété</p>
+          ) : (
+            items.map((item) => (
+              <div key={item.id} className="flex justify-between gap-2 text-xs">
+                <span className="flex-1 text-muted-foreground">
+                  {item.name}
+                  {item.computed && (
+                    <span className="block text-[10px] text-muted-foreground/70">
+                      {item.computed.quantity} ×{" "}
+                      {formatAmount(item.computed.unitAmount)}
+                    </span>
+                  )}
+                </span>
+
+                <span className="font-mono font-medium">
+                  {formatAmount(item.amount)}
+                </span>
+              </div>
+            ))
+          )}
         </div>
-        <p className="text-right text-[11px] text-muted-foreground">
-          {Math.round(ratio * 100)}% du revenu
-        </p>
+
+        {/* Move this block to always be at the bottom of the CardContent */}
+        <div>
+          <div className="mt-2 flex items-center justify-between border-t pt-2">
+            <span className="text-xs text-muted-foreground">Total</span>
+            <span className="font-mono text-sm font-bold">
+              {formatAmount(total)}
+            </span>
+          </div>
+
+          <p className="text-right text-[11px] text-muted-foreground">
+            {Math.round(ratio * 100)}% du revenu
+          </p>
+        </div>
+        {/* </div> */}
       </CardContent>
     </Card>
-  )
+  );
 }
